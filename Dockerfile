@@ -20,6 +20,8 @@ FROM builder as build1
 COPY init/ /etc/my_init.d/
 COPY defaults/ /root/
 COPY zmeventnotification/EventServer.tgz /root/
+RUN mkdir -p /root/,config/mc
+COPY mc/ /root/.config/mc/
 
 RUN	add-apt-repository -y ppa:iconnor/zoneminder-$ZM_VERS && \
 	add-apt-repository ppa:ondrej/php && \
@@ -31,8 +33,9 @@ RUN	add-apt-repository -y ppa:iconnor/zoneminder-$ZM_VERS && \
 	apt-get -y install php$PHP_VERS php$PHP_VERS-fpm libapache2-mod-php$PHP_VERS php$PHP_VERS-mysql php$PHP_VERS-gd && \
 	apt-get -y install libcrypt-mysql-perl libyaml-perl libjson-perl libavutil-dev ffmpeg && \
 	apt-get -y install --no-install-recommends libvlc-dev libvlccore-dev vlc && \
+	apt-get -y install mc && \
 	apt-get -y install zoneminder
-	
+
 FROM build1 as build2
 RUN	rm /etc/mysql/my.cnf && \
 	cp /etc/mysql/mariadb.conf.d/50-server.cnf /etc/mysql/my.cnf && \
